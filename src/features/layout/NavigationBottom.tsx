@@ -2,6 +2,7 @@ import {SetStateAction, useState} from 'react';
 
 import {useNavigate} from 'react-router-dom';
 
+import AddIcon from '@mui/icons-material/Add';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import HomeIcon from '@mui/icons-material/Home';
 import {BottomNavigation, BottomNavigationAction, Paper} from '@mui/material';
@@ -20,6 +21,9 @@ export default function NavigationBottom() {
             case 1:
                 navigate('/supply-list');
                 break;
+            case 2:
+                navigate('/item-creator');
+                break;
             default:
                 navigate('/');
                 break;
@@ -35,6 +39,7 @@ export default function NavigationBottom() {
             >
                 <BottomNavigationAction label="Home" icon={<HomeIcon />} />
                 <BottomNavigationAction label="Shopping List" icon={<ChecklistIcon />} />
+                <BottomNavigationAction label="Add item" icon={<AddIcon />} />
             </BottomNavigation>
         </Paper>
     );
