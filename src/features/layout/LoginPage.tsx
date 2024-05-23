@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {Box, Button, Container, TextField, Typography} from '@mui/material';
 
 import {Status, useAuthContext} from '../../shared/AuthContext.tsx';
-import {useMutateData} from '../../shared/hooks/useLogin.ts';
+import {useMutateData} from '../../shared/hooks/useMutateData.ts';
 
 const LoginPage: React.FC = () => {
     const authContext = useAuthContext();

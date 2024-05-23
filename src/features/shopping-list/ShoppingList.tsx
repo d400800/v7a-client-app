@@ -11,16 +11,14 @@ export default function ShoppingList() {
                 ?
                 items.map(product => (
                     <ListItem
-                            key={product.id}
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="delete" onClick={() => removeItem(product.id)}>
-                                    <ClearIcon/>
-                                </IconButton>
-                            }
+                        key={product.id}
+                        secondaryAction={
+                            <IconButton edge="end" aria-label="delete" onClick={() => removeItem(product.id)}>
+                                <ClearIcon/>
+                            </IconButton>
+                        }
                     >
-                        <ListItemText
-                                primary={product.name}
-                        />
+                        <ListItemText primary={product.title}/>
                     </ListItem>
                 ))
                 : (

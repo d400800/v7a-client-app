@@ -8,3 +8,8 @@ export const UnitsOfMeasurement = {
         label: 'l'
     }
 };
+
+export enum Unit {
+    Kilogram = 'kilogram',
+    Litre = 'litre',
+}

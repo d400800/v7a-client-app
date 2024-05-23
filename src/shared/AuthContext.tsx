@@ -33,7 +33,7 @@ const initialContext = {
 const authContext = createContext<AuthContextType>(initialContext);
 
 export const AuthContextProvider: React.FC<MyComponentProps> = ({children}) => {
-    const {data, error, isLoading} = useFetchData();
+    const {data, error, isLoading} = useFetchData('auth/profile');
     const [contextValue, setContextValue] = useState<AuthContextType>(initialContext);
 
     useEffect(() => {

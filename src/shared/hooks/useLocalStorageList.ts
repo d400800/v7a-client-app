@@ -1,12 +1,9 @@
 import {useState, useEffect} from 'react';
 
-interface Item {
-    id: string;
-    name: string;
-}
+import {Product} from '../../features/products/Products.tsx';
 
 const useLocalStorageList = (key: string) => {
-    const [items, setItems] = useState<Item[]>(() => {
+    const [items, setItems] = useState<Product[]>(() => {
         const storedItems = localStorage.getItem(key);
 
         return storedItems ? JSON.parse(storedItems) : [];
@@ -16,7 +13,7 @@ const useLocalStorageList = (key: string) => {
         localStorage.setItem(key, JSON.stringify(items));
     }, [key, items]);
 
-    const addItem = (item: Item) => {
+    const addItem = (item: Product) => {
         setItems(prevItems => [...prevItems, item]);
     };
 

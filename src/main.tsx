@@ -31,7 +31,11 @@ const router = createBrowserRouter([
             },
             {
                 path: '/item-creator',
-                element: <ItemCreator/>
+                element: <ItemCreator mode="create"/>
+            },
+            {
+                path: '/item-editor',
+                element: <ItemCreator mode="edit"/>
             }
         ]
     },

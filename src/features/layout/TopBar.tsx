@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {Box, IconButton, Paper} from '@mui/material';
 
-import {useMutateData} from '../../shared/hooks/useLogin.ts';
+import {useMutateData} from '../../shared/hooks/useMutateData.ts';
 export default function TopBar() {
     const navigate = useNavigate();
     const {mutate} = useMutateData();
