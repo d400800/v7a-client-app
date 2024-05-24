@@ -5,12 +5,12 @@ import {useNavigate} from 'react-router-dom';
 import {Box, Button, Container, TextField, Typography} from '@mui/material';
 
 import {Status, useAuthContext} from '../../shared/AuthContext.tsx';
-import {useMutateData} from '../../shared/hooks/useMutateData.ts';
+import {usePostData} from '../../shared/hooks/useMutateData.ts';
 
 const LoginPage: React.FC = () => {
     const authContext = useAuthContext();
     const navigate = useNavigate();
-    const {mutate} = useMutateData();
+    const {mutate} = usePostData();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

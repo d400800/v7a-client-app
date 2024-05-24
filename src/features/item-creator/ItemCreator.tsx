@@ -14,11 +14,10 @@ export default function ItemCreator({mode} : ItemCreatorProps) {
 
     const unitSelectRef = useRef<HTMLSelectElement>(null);
     const titleInputRef = useRef<HTMLInputElement>(null);
+    const categoryInputRef = useRef<HTMLInputElement>(null);
 
     const location = useLocation();
     const product = location.state?.product;
-
-    console.log(product);
 
     return (
         <Box>
@@ -33,7 +32,8 @@ export default function ItemCreator({mode} : ItemCreatorProps) {
                 noValidate autoComplete="off"
                 onSubmit={(event) => onSubmit(event, {
                     unit: unitSelectRef.current && unitSelectRef.current.value,
-                    title: titleInputRef.current && titleInputRef.current.value
+                    title: titleInputRef.current && titleInputRef.current.value,
+                    category: categoryInputRef.current && categoryInputRef.current.value
                 }, mode, product?.id)}
             >
                 <Box>
@@ -44,6 +44,17 @@ export default function ItemCreator({mode} : ItemCreatorProps) {
                         size="small"
                         required
                         label="Title"
+                    />
+                </Box>
+
+                <Box mt={2}>
+                    <TextField
+                        fullWidth
+                        defaultValue={product?.category}
+                        inputRef={categoryInputRef}
+                        size="small"
+                        required
+                        label="Category"
                     />
                 </Box>
 

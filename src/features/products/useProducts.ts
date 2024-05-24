@@ -1,8 +1,7 @@
 import {useState} from 'react';
 
 import {Product} from './Products.tsx';
-import {useFetchData} from '../../shared/hooks/useFetchData.ts';
-import {useDeleteData} from '../../shared/hooks/useMutateData.ts';
+import {useDeleteData, useFetchData} from '../../shared/hooks/useMutateData.ts';
 
 interface ProductsPageState {
     products: Product[],

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useMutation, UseMutationResult} from 'react-query';
+import {useMutation, UseMutationResult, useQuery, UseQueryOptions, UseQueryResult} from 'react-query';
 
 interface MutateDataProps<T> {
     data: T;
@@ -7,25 +7,85 @@ interface MutateDataProps<T> {
 }
 
 const mutateData = async <T, R>({data, url}: MutateDataProps<T>): Promise<R> => {
-    const response = await axios.post<R>(url, data);
+    try {
+        const response = await axios.post<R>(url, data);
 
-    return response.data;
+        return response.data;
+    } catch (err) {
+        handleError(err);
+
+        throw err; // Rethrow the error to ensure the function always returns a value of type R
+    }
 };
 
 const patchData = async <T, R>({data, url}: MutateDataProps<T>): Promise<R> => {
-    const response = await axios.patch<R>(url, data);
+    try {
+        const response = await axios.patch<R>(url, data);
 
-    return response.data;
+        return response.data;
+    } catch (err) {
+        handleError(err);
+
+        throw err; // Rethrow the error to ensure the function always returns a value of type R
+    }
 };
 
 const deleteData = async (url: string): Promise<string> => {
-    const response = await axios.delete(url);
+    try {
+        const response = await axios.delete(url);
 
-    console.log(response.data);
+        return response.data;
+    } catch (err) {
+        handleError(err);
 
-    return response.data;
+        throw err; // Rethrow the error to ensure the function always returns a value of type R
+    }
 };
 
-export const useMutateData = <T, R>(): UseMutationResult<R, unknown, MutateDataProps<T>, unknown> => useMutation<R, unknown, MutateDataProps<T>, unknown>(mutateData);
+const FetchDataWrapper = <T>(url: string, options?: UseQueryOptions<T>): UseQueryResult<T> => {
+    const fetchData = async (): Promise<T> => {
+        try {
+            const response = await axios.get(`api/${url}`); // Replace with your endpoint
+
+            return response.data;
+        } catch (err) {
+            handleError(err);
+
+            throw err; // Rethrow the error to ensure the function always returns a value of type R
+        }
+    };
+
+    return useQuery<T>(['data', url], fetchData, options);
+};
+
+function handleError(err: unknown) {
+    if (axios.isAxiosError(err)) {
+        if (err.response) {
+            // Server responded with a status other than in the 2
+            const status = err.response.status;
+
+            if (status === 401) {
+                // Handle 401 Unauthorized
+                throw new Error('Unauthorized access - please log in.');
+            } else if (status === 404) {
+                // Handle 404 Not Found
+                throw new Error('Data not found.');
+            } else {
+                // General error message for other status codes
+                throw new Error(`An error occurred: ${err.response.statusText}.`);
+            }
+        } else {
+            // Handle case where the server didn't respond
+            throw new Error('Server did not respond. Please try again later.');
+        }
+    } else {
+        // If the error is not from Axios
+        throw new Error('An unknown error occurred.');
+    }
+}
+
+export const usePostData = <T, R>(): UseMutationResult<R, unknown, MutateDataProps<T>, unknown> => useMutation<R, unknown, MutateDataProps<T>, unknown>(mutateData);
 export const usePatchData = <T, R>(): UseMutationResult<R, unknown, MutateDataProps<T>, unknown> => useMutation<R, unknown, MutateDataProps<T>, unknown>(patchData);
 export const useDeleteData = (): UseMutationResult<string, unknown, string, unknown> => useMutation(deleteData);
+
+export const useFetchData = <T>(url: string, options?: UseQueryOptions<T>) => FetchDataWrapper<T>(url, options);

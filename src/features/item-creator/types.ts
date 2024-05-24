@@ -9,6 +9,7 @@ export interface ItemCreatorState {
 export interface ItemCreatorData {
     unit: string | null;
     title: string | null;
+    category: string | null;
     id?: string;
 }
 

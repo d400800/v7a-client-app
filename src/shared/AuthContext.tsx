@@ -1,7 +1,7 @@
 import {createContext, Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
 import React from 'react';
 
-import {useFetchData} from './hooks/useFetchData.ts';
+import {useFetchData} from './hooks/useMutateData.ts';
 
 interface MyComponentProps {
     children: React.ReactNode;

@@ -1,7 +1,7 @@
 import {FormEvent, useState} from 'react';
 
 import {ItemCreatorData, ItemCreatorState} from './types.ts';
-import {useMutateData, usePatchData} from '../../shared/hooks/useMutateData.ts';
+import {usePostData, usePatchData} from '../../shared/hooks/useMutateData.ts';
 
 export function useItemCreator() {
     const [state, setState] = useState<ItemCreatorState>({
@@ -10,7 +10,7 @@ export function useItemCreator() {
         severity: 'success'
     });
 
-    const {mutate: create} = useMutateData();
+    const {mutate: create} = usePostData();
     const {mutate: patch} = usePatchData();
 
     function onCreate(data: ItemCreatorData) {

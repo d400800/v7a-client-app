@@ -3,10 +3,10 @@ import {useNavigate} from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {Box, IconButton, Paper} from '@mui/material';
 
-import {useMutateData} from '../../shared/hooks/useMutateData.ts';
+import {usePostData} from '../../shared/hooks/useMutateData.ts';
 export default function TopBar() {
     const navigate = useNavigate();
-    const {mutate} = useMutateData();
+    const {mutate} = usePostData();
 
     async function logout() {
         mutate({data: {}, url: 'api/auth/logout'});
