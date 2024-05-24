@@ -2,19 +2,21 @@ import {useState} from 'react';
 
 import {Product} from './Products.tsx';
 import {useDeleteData, useFetchData} from '../../shared/hooks/useMutateData.ts';
+import {NotificationState} from '../../shared/types.ts';
 
-interface ProductsPageState {
+interface ProductsPageState extends NotificationState {
     products: Product[],
-    message: string
+    collapseSet: Set<string>
 }
 
-const ProductsPageInitialState = {
-    products: [],
-    message: ''
-};
-
 export function useProducts() {
-    const [state, setState] = useState<ProductsPageState>(ProductsPageInitialState);
+    const [state, setState] = useState<ProductsPageState>({
+        products: [],
+        open: false,
+        message: '',
+        severity: 'success',
+        collapseSet: new Set()
+    });
 
     const {error, isLoading} = useFetchData<Product[]>('products', {
         onSuccess(data) {
@@ -35,19 +37,40 @@ export function useProducts() {
                 setState((prevState) => ({
                     ...prevState,
                     products: state.products.filter(p => p.id !== id),
-                    message: 'Item deleted successfully.'
+                    message: 'Item deleted successfully.',
+                    open: true
                 }));
             },
             onError: (error) => {
                 console.error('Failed to delete item:', error);
+
+                setState((prevState) => ({
+                    ...prevState,
+                    message: 'Failed to delete item.',
+                    severity: 'error',
+                    open: true
+                }));
             }
         });
     }
 
+    function handleCollapseClick(category: string) {
+        const newCollapseSet = new Set(state.collapseSet);
+
+        newCollapseSet.has(category) ? newCollapseSet.delete(category) : newCollapseSet.add(category);
+
+        setState((prevState) => ({
+            ...prevState,
+            collapseSet: newCollapseSet
+        }));
+    }
+
     return {
-        products: state.products,
+        state,
+        setState,
         error,
         isLoading,
-        onDelete
+        onDelete,
+        handleCollapseClick
     };
 }

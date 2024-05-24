@@ -1,10 +1,6 @@
-import {AlertColor} from '@mui/material/Alert/Alert';
+import {NotificationState} from '../../shared/types.ts';
 
-export interface ItemCreatorState {
-    open: boolean,
-    message: string;
-    severity: AlertColor;
-}
+export interface ItemCreatorState extends NotificationState {}
 
 export interface ItemCreatorData {
     unit: string | null;

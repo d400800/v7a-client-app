@@ -1,11 +1,13 @@
+import {groupBy} from 'lodash';
 import {useNavigate} from 'react-router-dom';
 
+import {ExpandLess, ExpandMore} from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
     Box,
-    CircularProgress,
+    CircularProgress, Collapse,
     IconButton,
     List,
     ListItem,
@@ -15,6 +17,7 @@ import {
 } from '@mui/material';
 
 import {useProducts} from './useProducts.ts';
+import Notification from '../../shared/components/Notification.tsx';
 import {Unit} from '../../shared/config.ts';
 import useLocalStorageList from '../../shared/hooks/useLocalStorageList.ts';
 
@@ -28,7 +31,7 @@ export default function Products() {
     const navigate = useNavigate();
     const {isInList, removeItem, addItem} = useLocalStorageList('supply-list');
 
-    const {onDelete, products, error, isLoading} = useProducts();
+    const {onDelete, state, setState, handleCollapseClick, error, isLoading} = useProducts();
 
     if (isLoading) {
         return (
@@ -46,40 +49,64 @@ export default function Products() {
         );
     }
 
+    const productsByCategory = groupBy(state.products, 'category');
+
     return (
         <>
             <List>
-                {products && products.map(product => (
-                    <ListItem
-                        key={product.id}
-                        secondaryAction={
-                            isInList(product.id)
-                                ? (
-                                    <IconButton onClick={() => removeItem(product.id)} edge="end" aria-label="check">
-                                        <CheckCircleIcon color="success"/>
-                                    </IconButton>
-                                )
-                                : (
-                                    <>
-                                        <IconButton onClick={() => onDelete(product.id)} edge="end" aria-label="delete">
-                                            <DeleteIcon/>
-                                        </IconButton>
-
-                                        <IconButton onClick={() => addItem(product)} edge="end" aria-label="delete">
-                                            <AddIcon/>
-                                        </IconButton>
-                                    </>
-                                )
-                        }
-                    >
-                        <ListItemButton onClick={() => navigate('/item-editor', {state: {product}})}>
+                {Object.entries(productsByCategory).map(([category, products]) => (
+                    <Box key={category}>
+                        <ListItemButton onClick={() => handleCollapseClick(category)}>
                             <ListItemText
-                                primary={product.title}
+                                primary={category}
                             />
+                            {state.collapseSet.has(category) ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
-                    </ListItem>
+
+                        <Collapse in={state.collapseSet.has(category)}>
+                            <List component="div" disablePadding>
+                                {products.map((product) => (
+                                    <ListItem
+                                        key={product.id}
+                                        secondaryAction={
+                                            isInList(product.id)
+                                                ? (
+                                                    <IconButton onClick={() => removeItem(product.id)} edge="end" aria-label="check">
+                                                        <CheckCircleIcon color="success"/>
+                                                    </IconButton>
+                                                )
+                                                : (
+                                                    <>
+                                                        <IconButton size="small" onClick={() => onDelete(product.id)} edge="end" aria-label="delete">
+                                                            <DeleteIcon/>
+                                                        </IconButton>
+
+                                                        <IconButton size="small" onClick={() => addItem(product)} edge="end" aria-label="delete">
+                                                            <AddIcon/>
+                                                        </IconButton>
+                                                    </>
+                                                )
+                                        }
+                                    >
+                                        <ListItemButton onClick={() => navigate('/item-editor', {state: {product}})}>
+                                            <ListItemText
+                                                secondary={product.title}
+                                            />
+                                        </ListItemButton>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Collapse>
+                    </Box>
                 ))}
             </List>
+
+            <Notification
+                open={state.open}
+                onClose={() => setState(prevState => ({...prevState, open: false}))}
+                message={state.message}
+                severity={state.severity}
+            />
         </>
 
     );
