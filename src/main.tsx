@@ -13,6 +13,7 @@ import LoginPage from './features/layout/LoginPage.tsx';
 import Products from './features/products/Products.tsx';
 import ShoppingList from './features/shopping-list/ShoppingList.tsx';
 import {AuthContextProvider} from './shared/AuthContext.tsx';
+import {NotificationContextProvider} from './shared/NotificationContext.tsx';
 
 const queryClient = new QueryClient();
 
@@ -48,9 +49,11 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <AuthContextProvider>
-                <RouterProvider router={router} />
-            </AuthContextProvider>
+            <NotificationContextProvider>
+                <AuthContextProvider>
+                    <RouterProvider router={router} />
+                </AuthContextProvider>
+            </NotificationContextProvider>
         </QueryClientProvider>
     </React.StrictMode>
 );

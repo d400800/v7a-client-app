@@ -6,11 +6,10 @@ import {Box, Button, MenuItem, Select, TextField, Typography} from '@mui/materia
 
 import {ItemCreatorProps} from './types.ts';
 import {useItemCreator} from './useItemCreator.ts';
-import Notification from '../../shared/components/Notification.tsx';
 import {UnitsOfMeasurement} from '../../shared/config.ts';
 
 export default function ItemCreator({mode} : ItemCreatorProps) {
-    const {state, setState, onSubmit} = useItemCreator();
+    const {onSubmit} = useItemCreator();
 
     const unitSelectRef = useRef<HTMLSelectElement>(null);
     const titleInputRef = useRef<HTMLInputElement>(null);
@@ -75,13 +74,6 @@ export default function ItemCreator({mode} : ItemCreatorProps) {
                 <Box mt={2}>
                     <Button fullWidth variant="contained" type="submit">Save</Button>
                 </Box>
-
-                <Notification
-                    open={state.open}
-                    onClose={() => setState(prevState => ({...prevState, open: false}))}
-                    message={state.message}
-                    severity={state.severity}
-                />
             </Box>
         </Box>
     );

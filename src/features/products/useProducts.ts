@@ -2,21 +2,21 @@ import {useState} from 'react';
 
 import {Product} from './Products.tsx';
 import {useDeleteData, useFetchData, usePostData} from '../../shared/hooks/useMutateData.ts';
-import {NotificationState, ShoppingListItem} from '../../shared/types.ts';
+import {useNotificationContext} from '../../shared/NotificationContext.tsx';
+import {ShoppingListItem} from '../../shared/types.ts';
 
-interface ProductsPageState extends NotificationState {
+interface ProductsPageState {
     products: Product[],
     shoppingList: ShoppingListItem[],
     collapseSet: Set<string>
 }
 
 export function useProducts() {
+    const notificationContext = useNotificationContext();
+
     const [state, setState] = useState<ProductsPageState>({
         products: [],
         shoppingList: [],
-        open: false,
-        message: '',
-        severity: 'success',
         collapseSet: new Set()
     });
 
@@ -43,50 +43,50 @@ export function useProducts() {
 
     function onDeleteProduct(id: string) {
         return deleteData(`api/products/${id}`, {
-            onSuccess: (data) => {
-                console.log('Item deleted successfully:', data);
-
+            onSuccess: () => {
                 setState((prevState) => ({
                     ...prevState,
-                    products: state.products.filter(p => p.id !== id),
-                    message: 'Item deleted successfully.',
-                    open: true
+                    products: state.products.filter(p => p.id !== id)
                 }));
+
+                notificationContext.setContextValue({
+                    message: 'Item deleted successfully.',
+                    severity: 'success',
+                    open: true
+                });
             },
             onError: (error) => {
-                console.error('Failed to delete item:', error);
-
-                setState((prevState) => ({
-                    ...prevState,
+                notificationContext.setContextValue({
                     message: 'Failed to delete item.',
                     severity: 'error',
-                    open: true
-                }));
+                    open: true,
+                    error
+                });
             }
         });
     }
 
     function onDeleteShoppingListItem(productId: string) {
         return deleteData(`api/shopping-list/${productId}`, {
-            onSuccess: (data) => {
-                console.log('Item deleted successfully:', data);
-
+            onSuccess: () => {
                 setState((prevState) => ({
                     ...prevState,
-                    shoppingList: state.shoppingList.filter(item => item.productId !== productId),
-                    message: 'Item deleted successfully.',
-                    open: true
+                    shoppingList: state.shoppingList.filter(item => item.productId !== productId)
                 }));
+
+                notificationContext.setContextValue({
+                    message: 'Item deleted successfully.',
+                    severity: 'success',
+                    open: true
+                });
             },
             onError: (error) => {
-                console.error('Failed to delete item:', error);
-
-                setState((prevState) => ({
-                    ...prevState,
+                notificationContext.setContextValue({
                     message: 'Failed to delete item.',
                     severity: 'error',
-                    open: true
-                }));
+                    open: true,
+                    error
+                });
             }
         });
     }
@@ -107,8 +107,6 @@ export function useProducts() {
             data: {productId, amount},
             url: 'api/shopping-list',
             onSuccess: (data: ShoppingListItem) => {
-                console.log(data);
-
                 setState((prevState) => ({
                     ...prevState,
                     shoppingList: [

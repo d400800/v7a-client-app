@@ -1,15 +1,11 @@
-import {FormEvent, useState} from 'react';
+import {FormEvent} from 'react';
 
-import {ItemCreatorData, ItemCreatorState} from './types.ts';
+import {ItemCreatorData} from './types.ts';
 import {usePostData, usePatchData} from '../../shared/hooks/useMutateData.ts';
+import {useNotificationContext} from '../../shared/NotificationContext.tsx';
 
 export function useItemCreator() {
-    const [state, setState] = useState<ItemCreatorState>({
-        open: false,
-        message: '',
-        severity: 'success'
-    });
-
+    const notificationContext = useNotificationContext();
     const {mutate: create} = usePostData();
     const {mutate: patch} = usePatchData();
 
@@ -17,25 +13,20 @@ export function useItemCreator() {
         create(
             {data, url: 'api/products'},
             {
-                onSuccess: (data) => {
-                    console.log('Item created successfully:', data);
-
-                    setState(prevState => ({
-                        ...prevState,
-                        open: true,
+                onSuccess: () => {
+                    notificationContext.setContextValue({
                         message: 'Item created successfully.',
-                        severity: 'success'
-                    }));
+                        severity: 'success',
+                        open: true
+                    });
                 },
                 onError: (error) => {
-                    console.error('Failed to create item:', error);
-
-                    setState(prevState => ({
-                        ...prevState,
+                    notificationContext.setContextValue({
                         open: true,
                         message: 'Failed to create item.',
-                        severity: 'error'
-                    }));
+                        severity: 'error',
+                        error
+                    });
                 }
             }
         );
@@ -45,25 +36,20 @@ export function useItemCreator() {
         patch(
             {data, url: `api/products/${id}`},
             {
-                onSuccess: (data) => {
-                    console.log('Item updated successfully:', data);
-
-                    setState(prevState => ({
-                        ...prevState,
+                onSuccess: () => {
+                    notificationContext.setContextValue({
+                        message: 'Item created successfully.',
                         open: true,
-                        message: 'Item updated successfully.',
                         severity: 'success'
-                    }));
+                    });
                 },
                 onError: (error) => {
-                    console.error('Failed to update item:', error);
-
-                    setState(prevState => ({
-                        ...prevState,
+                    notificationContext.setContextValue({
                         open: true,
                         message: 'Failed to update item.',
-                        severity: 'error'
-                    }));
+                        severity: 'error',
+                        error
+                    });
                 }
             }
         );
@@ -82,8 +68,6 @@ export function useItemCreator() {
     }
 
     return {
-        state,
-        setState,
         onSubmit
     };
 }

@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 
 import {useProducts} from './useProducts.ts';
-import Notification from '../../shared/components/Notification.tsx';
 import {Unit} from '../../shared/config.ts';
 
 export type Product = {
@@ -32,7 +31,6 @@ export default function Products() {
     const {
         onDeleteProduct,
         state,
-        setState,
         handleCollapseClick,
         addItem,
         isInList,
@@ -108,14 +106,6 @@ export default function Products() {
                     </Box>
                 ))}
             </List>
-
-            <Notification
-                open={state.open}
-                onClose={() => setState(prevState => ({...prevState, open: false}))}
-                message={state.message}
-                severity={state.severity}
-            />
         </>
-
     );
 }
