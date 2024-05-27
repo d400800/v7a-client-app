@@ -1,24 +1,42 @@
-import ClearIcon from '@mui/icons-material/Clear';import {IconButton, List, ListItem, ListItemText, Typography} from '@mui/material';
 
-import useLocalStorageList from '../../shared/hooks/useLocalStorageList.ts';
+import ClearIcon from '@mui/icons-material/Clear';
+import {Box, CircularProgress, IconButton, List, ListItem, ListItemText, Typography} from '@mui/material';
+
+import useShoppingList from './useShoppingList.ts';
 
 export default function ShoppingList() {
-    const {items, removeItem} = useLocalStorageList('supply-list');
+    const {state, error, isLoading, onDeleteShoppingListItem} = useShoppingList();
+
+    if (error) {
+        return (
+            <Box mx="auto" textAlign="center" py={10}>
+                <Typography>Something went wrong. Please, try again later.</Typography>
+            </Box>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <Box mx="auto" textAlign="center" py={10}>
+                <CircularProgress/>
+            </Box>
+        );
+    }
 
     return (
         <List>
-            {items?.length
+            {state.shoppingListItems.length
                 ?
-                items.map(product => (
+                state.shoppingListItems.map(item => (
                     <ListItem
-                        key={product.id}
+                        key={item.productId}
                         secondaryAction={
-                            <IconButton edge="end" aria-label="delete" onClick={() => removeItem(product.id)}>
+                            <IconButton edge="end" aria-label="delete" onClick={() => onDeleteShoppingListItem(item.productId)}>
                                 <ClearIcon/>
                             </IconButton>
                         }
                     >
-                        <ListItemText primary={product.title}/>
+                        <ListItemText primary={item.productTitle}/>
                     </ListItem>
                 ))
                 : (

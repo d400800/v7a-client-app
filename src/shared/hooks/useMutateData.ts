@@ -1,19 +1,33 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import {useMutation, UseMutationResult, useQuery, UseQueryOptions, UseQueryResult} from 'react-query';
 
 interface MutateDataProps<T> {
     data: T;
     url: string;
+    onSuccess?: (data: T) => void;
 }
 
-const mutateData = async <T, R>({data, url}: MutateDataProps<T>): Promise<R> => {
+interface PostDataProps<T, R> {
+    data: T;
+    url: string;
+    onSuccess?: (data: R) => void;
+    onError?: (error: unknown) => void;
+}
+
+const mutateData = async <T, R>({data, url, onSuccess, onError}: PostDataProps<T, R>): Promise<R> => {
     try {
-        const response = await axios.post<R>(url, data);
+        const response: AxiosResponse<R> = await axios.post<R>(url, data);
+
+        if (onSuccess) {
+            onSuccess(response.data);
+        }
 
         return response.data;
     } catch (err) {
+        if (onError) {
+            onError(err);
+        }
         handleError(err);
-
         throw err; // Rethrow the error to ensure the function always returns a value of type R
     }
 };
@@ -84,7 +98,9 @@ function handleError(err: unknown) {
     }
 }
 
-export const usePostData = <T, R>(): UseMutationResult<R, unknown, MutateDataProps<T>, unknown> => useMutation<R, unknown, MutateDataProps<T>, unknown>(mutateData);
+export const usePostData = <T, R>(): UseMutationResult<R, unknown, PostDataProps<T, R>, unknown> =>
+    useMutation<R, unknown, PostDataProps<T, R>, unknown>(mutateData);
+//export const usePostData = <T, R>(): UseMutationResult<R, unknown, MutateDataProps<T>, unknown> => useMutation<R, unknown, MutateDataProps<T>, unknown>(mutateData);
 export const usePatchData = <T, R>(): UseMutationResult<R, unknown, MutateDataProps<T>, unknown> => useMutation<R, unknown, MutateDataProps<T>, unknown>(patchData);
 export const useDeleteData = (): UseMutationResult<string, unknown, string, unknown> => useMutation(deleteData);
 

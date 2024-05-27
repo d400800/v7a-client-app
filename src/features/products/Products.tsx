@@ -19,7 +19,6 @@ import {
 import {useProducts} from './useProducts.ts';
 import Notification from '../../shared/components/Notification.tsx';
 import {Unit} from '../../shared/config.ts';
-import useLocalStorageList from '../../shared/hooks/useLocalStorageList.ts';
 
 export type Product = {
     id: string;
@@ -29,11 +28,20 @@ export type Product = {
 
 export default function Products() {
     const navigate = useNavigate();
-    const {isInList, removeItem, addItem} = useLocalStorageList('supply-list');
 
-    const {onDelete, state, setState, handleCollapseClick, error, isLoading} = useProducts();
+    const {
+        onDeleteProduct,
+        state,
+        setState,
+        handleCollapseClick,
+        addItem,
+        isInList,
+        isDataError,
+        isDataLoading,
+        onDeleteShoppingListItem
+    } = useProducts();
 
-    if (isLoading) {
+    if (isDataLoading()) {
         return (
             <Box mx="auto" textAlign="center" py={10}>
                 <CircularProgress/>
@@ -41,7 +49,7 @@ export default function Products() {
         );
     }
 
-    if (error) {
+    if (isDataError()) {
         return (
             <Box mx="auto" textAlign="center" py={10}>
                 <Typography>Something went wrong. Please, try again later.</Typography>
@@ -69,19 +77,19 @@ export default function Products() {
                                     <ListItem
                                         key={product.id}
                                         secondaryAction={
-                                            isInList(product.id)
+                                            isInList(product.id, state.shoppingList)
                                                 ? (
-                                                    <IconButton onClick={() => removeItem(product.id)} edge="end" aria-label="check">
+                                                    <IconButton onClick={() => onDeleteShoppingListItem(product.id)} edge="end" aria-label="check">
                                                         <CheckCircleIcon color="success"/>
                                                     </IconButton>
                                                 )
                                                 : (
                                                     <>
-                                                        <IconButton size="small" onClick={() => onDelete(product.id)} edge="end" aria-label="delete">
+                                                        <IconButton size="small" onClick={() => onDeleteProduct(product.id)} edge="end" aria-label="delete">
                                                             <DeleteIcon/>
                                                         </IconButton>
 
-                                                        <IconButton size="small" onClick={() => addItem(product)} edge="end" aria-label="delete">
+                                                        <IconButton size="small" onClick={() => addItem(product.id, 1)} edge="end" aria-label="delete">
                                                             <AddIcon/>
                                                         </IconButton>
                                                     </>
