@@ -22,6 +22,7 @@ import {Unit} from '../../shared/config.ts';
 export type Product = {
     id: string;
     title: string;
+    category: string;
     unit: Unit;
 }
 

@@ -2,21 +2,28 @@ import {useRef} from 'react';
 
 import {useLocation} from 'react-router-dom';
 
-import {Box, Button, MenuItem, Select, TextField, Typography} from '@mui/material';
+import {Box, Button, CircularProgress, MenuItem, Select, TextField, Typography} from '@mui/material';
 
 import {ItemCreatorProps} from './types.ts';
 import {useItemCreator} from './useItemCreator.ts';
+import CreatableAutocomplete from '../../shared/components/CreatableAutocomplete.tsx';
 import {UnitsOfMeasurement} from '../../shared/config.ts';
 
 export default function ItemCreator({mode} : ItemCreatorProps) {
-    const {onSubmit} = useItemCreator();
+    const location = useLocation();
+    const product = location.state?.product;
+    const {onSubmit, setCategory, categories, isFetching, category} = useItemCreator(product);
 
     const unitSelectRef = useRef<HTMLSelectElement>(null);
     const titleInputRef = useRef<HTMLInputElement>(null);
-    const categoryInputRef = useRef<HTMLInputElement>(null);
 
-    const location = useLocation();
-    const product = location.state?.product;
+    if (isFetching) {
+        return (
+            <Box mx="auto" textAlign="center" py={10}>
+                <CircularProgress/>
+            </Box>
+        );
+    }
 
     return (
         <Box>
@@ -32,7 +39,7 @@ export default function ItemCreator({mode} : ItemCreatorProps) {
                 onSubmit={(event) => onSubmit(event, {
                     unit: unitSelectRef.current && unitSelectRef.current.value,
                     title: titleInputRef.current && titleInputRef.current.value,
-                    category: categoryInputRef.current && categoryInputRef.current.value
+                    category: category && category.id || ''
                 }, mode, product?.id)}
             >
                 <Box>
@@ -47,13 +54,9 @@ export default function ItemCreator({mode} : ItemCreatorProps) {
                 </Box>
 
                 <Box mt={2}>
-                    <TextField
-                        fullWidth
-                        defaultValue={product?.category}
-                        inputRef={categoryInputRef}
-                        size="small"
-                        required
-                        label="Category"
+                    <CreatableAutocomplete
+                        autocompleteOptions={categories}
+                        onSelectValue={(value) => setCategory(value)}
                     />
                 </Box>
 
