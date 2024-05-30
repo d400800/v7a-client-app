@@ -33,10 +33,25 @@ export default function useShoppingList() {
         });
     }
 
+    const shareTodoList = () => {
+        const todoText = state.shoppingListItems.map((item, index) => `${index + 1}. ${item.productTitle}`).join('\n');
+        const message = `Shopping list:\n\n${todoText}`;
+
+        // Encode the message to be URI-safe
+        const encodedMessage = encodeURIComponent(message);
+
+        // Construct the WhatsApp sharing URL
+        const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+
+        // Open the WhatsApp sharing URL in a new window/tab
+        window.open(whatsappUrl, '_blank');
+    };
+
     return {
         state,
         error,
         isLoading,
+        shareTodoList,
         onDeleteShoppingListItem
     };
 }

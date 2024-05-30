@@ -22,7 +22,7 @@ const Layout: React.FC = () => {
         <Container maxWidth="sm">
             <TopBar/>
 
-            <Box sx={{marginTop: 6}}>
+            <Box sx={{marginTop: 6, marginBottom: 8}}>
                 {authContext?.isLoading
                     ? (
                         <Box sx={{
