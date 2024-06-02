@@ -1,31 +1,31 @@
 import {SetStateAction, useState} from 'react';
 
-import {useNavigate} from 'react-router-dom';
-
 import AddIcon from '@mui/icons-material/Add';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import HomeIcon from '@mui/icons-material/Home';
 import {BottomNavigation, BottomNavigationAction, Paper} from '@mui/material';
 
+import useAppRouter from '../../shared/hooks/useAppRouter.ts';
+
 export default function NavigationBottom() {
     const [value, setValue] = useState(0);
-    const navigate = useNavigate();
+    const {goTo} = useAppRouter();
 
     const handleNavigationChange = (_event: React.SyntheticEvent, newValue: SetStateAction<number>) => {
         setValue(newValue);
 
         switch (newValue) {
             case 0:
-                navigate('/');
+                goTo('');
                 break;
             case 1:
-                navigate('/supply-list');
+                goTo('supply-list');
                 break;
             case 2:
-                navigate('/item-creator');
+                goTo('item-creator');
                 break;
             default:
-                navigate('/');
+                goTo('');
                 break;
         }
     };

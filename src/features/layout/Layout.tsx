@@ -1,22 +1,23 @@
 import {useEffect} from 'react';
 
-import {Outlet, useNavigate} from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
 
 import {Box, CircularProgress, Container} from '@mui/material';
 
 import NavigationBottom from './NavigationBottom.tsx';
 import TopBar from './TopBar.tsx';
 import {Status, useAuthContext} from '../../shared/AuthContext.tsx';
+import useAppRouter from '../../shared/hooks/useAppRouter.ts';
 
 const Layout: React.FC = () => {
-    const navigate = useNavigate();
+    const {goTo} = useAppRouter();
     const authContext = useAuthContext();
 
     useEffect(() => {
         if (!authContext.isLoading && authContext.status !== Status.Success) {
-            navigate('/login');
+            goTo('login');
         }
-    }, [authContext.isLoading, authContext.status, navigate]);
+    }, [authContext.isLoading, authContext.status]);
 
     return (
         <Container maxWidth="sm">

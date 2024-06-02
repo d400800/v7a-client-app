@@ -23,7 +23,7 @@ export default function useShoppingList() {
     const {mutate: deleteData} = useDeleteData();
 
     function onDeleteShoppingListItem(id: string) {
-        return deleteData(`api/shopping-list/${id}`, {
+        return deleteData(`shopping-list/${id}`, {
             onSuccess: () => {
                 setState((prevState) => ({
                     ...prevState,

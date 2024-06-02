@@ -17,31 +17,33 @@ import {NotificationContextProvider} from './shared/NotificationContext.tsx';
 
 const queryClient = new QueryClient();
 
+const VITE_BASE = import.meta.env.VITE_BASE || '/';
+
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: VITE_BASE,
         element: <Layout/>,
         children: [
             {
-                path: '/',
+                path: VITE_BASE,
                 element: <Products/>
             },
             {
-                path: '/supply-list',
+                path: VITE_BASE + 'supply-list',
                 element: <ShoppingList/>
             },
             {
-                path: '/item-creator',
+                path: VITE_BASE + 'item-creator',
                 element: <ItemCreator mode="create"/>
             },
             {
-                path: '/item-editor',
+                path: VITE_BASE + 'item-editor',
                 element: <ItemCreator mode="edit"/>
             }
         ]
     },
     {
-        path: '/login',
+        path: VITE_BASE + 'login',
         element: <LoginPage/>
     }
 ]);

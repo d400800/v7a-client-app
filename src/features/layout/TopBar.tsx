@@ -1,17 +1,17 @@
-import {useNavigate} from 'react-router-dom';
 
 import LogoutIcon from '@mui/icons-material/Logout';
 import {Box, IconButton, Paper} from '@mui/material';
 
+import useAppRouter from '../../shared/hooks/useAppRouter.ts';
 import {usePostData} from '../../shared/hooks/useMutateData.ts';
 export default function TopBar() {
-    const navigate = useNavigate();
+    const {goTo} = useAppRouter();
     const {mutate} = usePostData();
 
     async function logout() {
-        mutate({data: {}, url: 'api/auth/logout'});
+        mutate({data: {}, url: 'auth/logout'});
 
-        navigate('/login');
+        goTo('login');
     }
 
     return (

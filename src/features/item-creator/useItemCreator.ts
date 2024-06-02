@@ -30,7 +30,7 @@ export function useItemCreator(product: Product) {
 
     function onCreate(data: ItemCreatorData) {
         create(
-            {data, url: 'api/products'},
+            {data, url: 'products'},
             {
                 onSuccess: () => {
                     notificationContext.setContextValue({
@@ -53,7 +53,7 @@ export function useItemCreator(product: Product) {
 
     function onEdit(data: ItemCreatorData, id: string) {
         patch(
-            {data, url: `api/products/${id}`},
+            {data, url: `products/${id}`},
             {
                 onSuccess: () => {
                     notificationContext.setContextValue({

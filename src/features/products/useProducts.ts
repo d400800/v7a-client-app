@@ -42,7 +42,7 @@ export function useProducts() {
     const {mutate: postData} = usePostData<ShoppingListItem, ShoppingListItem>();
 
     function onDeleteProduct(id: string) {
-        return deleteData(`api/products/${id}`, {
+        return deleteData(`products/${id}`, {
             onSuccess: () => {
                 setState((prevState) => ({
                     ...prevState,
@@ -67,7 +67,7 @@ export function useProducts() {
     }
 
     function onDeleteShoppingListItem(productId: string) {
-        return deleteData(`api/shopping-list/${productId}`, {
+        return deleteData(`shopping-list/${productId}`, {
             onSuccess: () => {
                 setState((prevState) => ({
                     ...prevState,
@@ -105,7 +105,7 @@ export function useProducts() {
     function addItem(productId: string, amount: number) {
         postData({
             data: {productId, amount},
-            url: 'api/shopping-list',
+            url: 'shopping-list',
             onSuccess: (data: ShoppingListItem) => {
                 setState((prevState) => ({
                     ...prevState,

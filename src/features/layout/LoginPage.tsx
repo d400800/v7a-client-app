@@ -1,15 +1,14 @@
 import {useState} from 'react';
 
-import {useNavigate} from 'react-router-dom';
-
 import {Box, Button, Container, TextField, Typography} from '@mui/material';
 
 import {Status, useAuthContext} from '../../shared/AuthContext.tsx';
+import useAppRouter from '../../shared/hooks/useAppRouter.ts';
 import {usePostData} from '../../shared/hooks/useMutateData.ts';
 
 const LoginPage: React.FC = () => {
     const authContext = useAuthContext();
-    const navigate = useNavigate();
+    const {goTo} = useAppRouter();
     const {mutate} = usePostData();
 
     const [username, setUsername] = useState('');
@@ -18,12 +17,19 @@ const LoginPage: React.FC = () => {
 
     async function login() {
         mutate(
-            {data: {username, password}, url: 'api/auth/login'},
+            {data: {username, password}, url: 'auth/login'},
             {
-                onSuccess: (data) => {
+                onSuccess: (data: any) => {
                     console.log('Login successful:', data);
+
+                    const token = data.access_token;
+
+                    // Save the token to local storage
+                    localStorage.setItem('access_token', token);
+
                     authContext.setContextValue((prevState) => ({...prevState, status: Status.Success}));
-                    navigate('/');
+
+                    goTo('');
                 },
                 onError: (error) => {
                     console.error('Login failed:', error);

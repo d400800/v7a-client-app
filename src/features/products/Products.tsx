@@ -1,5 +1,4 @@
 import {groupBy} from 'lodash';
-import {useNavigate} from 'react-router-dom';
 
 import {ExpandLess, ExpandMore} from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,6 +17,7 @@ import {
 
 import {useProducts} from './useProducts.ts';
 import {Unit} from '../../shared/config.ts';
+import useAppRouter from '../../shared/hooks/useAppRouter.ts';
 
 export type Product = {
     id: string;
@@ -27,7 +27,7 @@ export type Product = {
 }
 
 export default function Products() {
-    const navigate = useNavigate();
+    const {goTo} = useAppRouter();
 
     const {
         onDeleteProduct,
@@ -95,7 +95,7 @@ export default function Products() {
                                                 )
                                         }
                                     >
-                                        <ListItemButton onClick={() => navigate('/item-editor', {state: {product}})}>
+                                        <ListItemButton onClick={() => goTo('item-editor', {state: {product}})}>
                                             <ListItemText
                                                 secondary={product.title}
                                             />

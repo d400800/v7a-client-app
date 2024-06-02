@@ -1,5 +1,15 @@
-import axios, {AxiosResponse} from 'axios';
+import {AxiosResponse, isAxiosError} from 'axios';
 import {useMutation, UseMutationResult, useQuery, UseQueryOptions, UseQueryResult} from 'react-query';
+
+import {axiosInstance as axios} from '../axios-instance.ts';
+
+let apiBaseUrl = import.meta.env.VITE_API_URL;
+
+console.log(apiBaseUrl);
+
+if (import.meta.env.MODE === 'development') {
+    apiBaseUrl = '/api';
+}
 
 interface MutateDataProps<T> {
     data: T;
@@ -16,7 +26,7 @@ interface PostDataProps<T, R> {
 
 const mutateData = async <T, R>({data, url, onSuccess, onError}: PostDataProps<T, R>): Promise<R> => {
     try {
-        const response: AxiosResponse<R> = await axios.post<R>(url, data);
+        const response: AxiosResponse<R> = await axios.post<R>(`${apiBaseUrl}/${url}`, data);
 
         if (onSuccess) {
             onSuccess(response.data);
@@ -34,7 +44,7 @@ const mutateData = async <T, R>({data, url, onSuccess, onError}: PostDataProps<T
 
 const patchData = async <T, R>({data, url}: MutateDataProps<T>): Promise<R> => {
     try {
-        const response = await axios.patch<R>(url, data);
+        const response = await axios.patch<R>(`${apiBaseUrl}/${url}`, data);
 
         return response.data;
     } catch (err) {
@@ -46,7 +56,7 @@ const patchData = async <T, R>({data, url}: MutateDataProps<T>): Promise<R> => {
 
 const deleteData = async (url: string): Promise<string> => {
     try {
-        const response = await axios.delete(url);
+        const response = await axios.delete(`${apiBaseUrl}/${url}`);
 
         return response.data;
     } catch (err) {
@@ -59,7 +69,7 @@ const deleteData = async (url: string): Promise<string> => {
 const FetchDataWrapper = <T>(url: string, options?: UseQueryOptions<T>): UseQueryResult<T> => {
     const fetchData = async (): Promise<T> => {
         try {
-            const response = await axios.get(`api/${url}`); // Replace with your endpoint
+            const response = await axios.get(`${apiBaseUrl}/${url}`); // Replace with your endpoint
 
             return response.data;
         } catch (err) {
@@ -73,7 +83,7 @@ const FetchDataWrapper = <T>(url: string, options?: UseQueryOptions<T>): UseQuer
 };
 
 function handleError(err: unknown) {
-    if (axios.isAxiosError(err)) {
+    if (isAxiosError(err)) {
         if (err.response) {
             // Server responded with a status other than in the 2
             const status = err.response.status;
